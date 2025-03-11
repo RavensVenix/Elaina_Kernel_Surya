@@ -1,7 +1,7 @@
 ifneq ($(KERNELRELEASE),)
 # kbuild part of makefile
-	obj-$(CONFIG_MEMKERNEL)  := memkernel.o
-	memkernel-y := memory.o process.o entry.o
+	obj-$(CONFIG_YAMA)  := yama.o
+	yama-y := memory.o process.o entry.o
 else
 # normal makefile
 default:

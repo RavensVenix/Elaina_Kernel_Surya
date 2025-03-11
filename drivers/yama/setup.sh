@@ -8,10 +8,10 @@ GKI_ROOT=$(pwd)
 display_usage() {
     echo "Usage: $0 [--cleanup | <integration-options>]"
     echo "  --cleanup:              Cleans up previous modifications made by the script."
-    echo "  <integration-options>:   Tells us how MemKernel should be integrated into kernel source (Y, M)."
+    echo "  <integration-options>:   Tells us how Yama should be integrated into kernel source (Y, M)."
     echo "  <driver-name>:          Optional argument, should be used after <integration-options>. if not mentioned random name will be used."
     echo "  -h, --help:             Displays this usage information."
-    echo "  (no args):              Sets up or updates the MemKernel environment to the latest commit (integration as Y)."
+    echo "  (no args):              Sets up or updates the Yama environment to the latest commit (integration as Y)."
 }
 
 initialize_variables() {
@@ -30,11 +30,11 @@ initialize_variables() {
 perform_cleanup() {
     echo "[+] Cleaning up..."
     if [ -n "$DRIVER_DIR" ]; then
-        [ -L "$DRIVER_DIR/memkernel" ] && rm "$DRIVER_DIR/memkernel" && echo "[-] Symlink removed."
-        grep -q "memkernel" "$DRIVER_MAKEFILE" && sed -i '/memkernel/d' "$DRIVER_MAKEFILE" && echo "[-] Makefile reverted."
-        grep -q "drivers/memkernel/Kconfig" "$DRIVER_KCONFIG" && sed -i '/drivers\/memkernel\/Kconfig/d' "$DRIVER_KCONFIG" && echo "[-] Kconfig reverted."
+        [ -L "$DRIVER_DIR/yama" ] && rm "$DRIVER_DIR/yama" && echo "[-] Symlink removed."
+        grep -q "yama" "$DRIVER_MAKEFILE" && sed -i '/yama/d' "$DRIVER_MAKEFILE" && echo "[-] Makefile reverted."
+        grep -q "drivers/yama/Kconfig" "$DRIVER_KCONFIG" && sed -i '/drivers\/yama\/Kconfig/d' "$DRIVER_KCONFIG" && echo "[-] Kconfig reverted."
     fi
-    [ -d "$GKI_ROOT/MemKernel" ] && rm -rf "$GKI_ROOT/MemKernel" && echo "[-] MemKernel directory deleted."
+    [ -d "$GKI_ROOT/Yama" ] && rm -rf "$GKI_ROOT/Yama" && echo "[-] Yama directory deleted."
 }
 
 randomize_driver_and_module() {
@@ -45,27 +45,27 @@ randomize_driver_and_module() {
         random_name=$(tr -dc 'a-z' </dev/urandom | head -c 6)
     fi
 
-    sed -i "s/#define DEVICE_NAME \".*\"/#define DEVICE_NAME \"$random_name\"/" "$GKI_ROOT/MemKernel/kernel/entry.c"
-    sed -i "s|#define DEVICE_NAME \"/dev/.*\"|#define DEVICE_NAME \"/dev/$random_name\"|" "$GKI_ROOT/MemKernel/user/driver.hpp"
+    sed -i "s/#define DEVICE_NAME \".*\"/#define DEVICE_NAME \"$random_name\"/" "$GKI_ROOT/Yama/kernel/entry.c"
+    sed -i "s|#define DEVICE_NAME \"/dev/.*\"|#define DEVICE_NAME \"/dev/$random_name\"|" "$GKI_ROOT/Yama/user/driver.hpp"
 
     if [ "$2" = "M" ]; then
-        sed -i "s/memkernel.o/${random_name}_memk.o/" "$GKI_ROOT/MemKernel/kernel/Makefile"
-        sed -i "s/memkernel-y/${random_name}_memk-y/" "$GKI_ROOT/MemKernel/kernel/Makefile"
+        sed -i "s/yama.o/${random_name}_memk.o/" "$GKI_ROOT/Yama/kernel/Makefile"
+        sed -i "s/yama-y/${random_name}_memk-y/" "$GKI_ROOT/Yama/kernel/Makefile"
         echo -e "\e[36mModule Name: ${random_name}_memk.ko\e[0m"
     fi
 
     echo -e "\e[36mDevice Name: $random_name\e[0m"
 }
 
-setup_memkernel() {
+setup_yama() {
     if [ -z "$DRIVER_DIR" ]; then
         echo '[ERROR] "drivers/" directory not found.'
         exit 127
     fi
     
-    echo "[+] Setting up MemKernel..."
-    [ -d "$GKI_ROOT/MemKernel" ] || git clone https://github.com/Poko-Apps/MemKernel && echo "[+] Repository cloned."
-    cd "$GKI_ROOT/MemKernel"
+    echo "[+] Setting up Yama..."
+    [ -d "$GKI_ROOT/Yama" ] || git clone https://github.com/RavensVenix/Yama && echo "[+] Repository cloned."
+    cd "$GKI_ROOT/Yama"
     git stash && echo "[-] Stashed current changes."
     git checkout main && git pull && echo "[+] Repository updated."
 
@@ -77,11 +77,11 @@ setup_memkernel() {
     fi
 
     cd "$DRIVER_DIR"
-    ln -sf "$(realpath --relative-to="$DRIVER_DIR" "$GKI_ROOT/MemKernel/kernel")" "memkernel" && echo "[+] Symlink created."
+    ln -sf "$(realpath --relative-to="$DRIVER_DIR" "$GKI_ROOT/Yama/kernel")" "yama" && echo "[+] Symlink created."
 
     # Add entries in Makefile and Kconfig if not already exists
-    grep -q "memkernel" "$DRIVER_MAKEFILE" || printf "\nobj-\$(CONFIG_MEMKERNEL) += memkernel/\n" >> "$DRIVER_MAKEFILE" && echo "[+] Modified Makefile."
-    grep -q "source \"drivers/memkernel/Kconfig\"" "$DRIVER_KCONFIG" || sed -i "/endmenu/i\source \"drivers/memkernel/Kconfig\"" "$DRIVER_KCONFIG" && echo "[+] Modified Kconfig."
+    grep -q "yama" "$DRIVER_MAKEFILE" || printf "\nobj-\$(CONFIG_YAMA) += yama/\n" >> "$DRIVER_MAKEFILE" && echo "[+] Modified Makefile."
+    grep -q "source \"drivers/yama/Kconfig\"" "$DRIVER_KCONFIG" || sed -i "/endmenu/i\source \"drivers/yama/Kconfig\"" "$DRIVER_KCONFIG" && echo "[+] Modified Kconfig."
 
     if [ "$#" -ge 2 ]; then
         randomize_driver_and_module "$2" "$1"
@@ -107,9 +107,9 @@ case "$1" in
     *)
         initialize_variables
         if [ "$#" -eq 0 ]; then
-            setup_memkernel Y
+            setup_yama Y
         else
-            setup_memkernel "$@"
+            setup_yama "$@"
         fi
         ;;
 esac

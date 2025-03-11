@@ -32,12 +32,9 @@ uintptr_t get_module_base(pid_t pid, char *name)
 #endif
 	uintptr_t module_base = 0;
 
-	pid_struct = find_get_pid(pid);
-	if (!pid_struct) {
-		return false;
-	}
-	task = get_pid_task(pid_struct, PIDTYPE_PID);
-	put_pid(pid_struct);
+	rcu_read_lock();
+    task = pid_task(find_vpid(pid), PIDTYPE_PID);
+    rcu_read_unlock();
 	if (!task) {
 		return false;
 	}
@@ -59,10 +56,9 @@ uintptr_t get_module_base(pid_t pid, char *name)
 		char buf[ARC_PATH_MAX];
 		char *path_nm = "";
 
-		if (vma->vm_file) {
-			path_nm = file_path(vma->vm_file, buf, ARC_PATH_MAX - 1);
-			if (!strcmp(kbasename(path_nm), name)) {
-				module_base = vma->vm_start;
+		if (vma->vm_start && !vma->vm_file) {
+			if (vma->vm_ops && strstr(vma->vm_ops->name, name)) {
+			    module_base = vma->vm_start;
 				break;
 			}
 		}

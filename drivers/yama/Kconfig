@@ -1,4 +1,4 @@
-config MEMKERNEL
+config YAMA
     tristate "Physical Mem Operation Driver"
     default y
     help

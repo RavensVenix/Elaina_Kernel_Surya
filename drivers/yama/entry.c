@@ -1,12 +1,3 @@
-// MIT License
-/*
- * Memory Operation driver for Linux Android
- *
- * Original author:  Jiang-Night
- * Current maintainer: Poko
- *
-*/
-
 #include <linux/module.h>
 #include <linux/fs.h>
 #include <linux/miscdevice.h>
@@ -16,7 +7,7 @@
 #include "memory.h"
 #include "process.h"
 
-#define DEVICE_NAME "phmeop"
+#define DEVICE_NAME "Yama"
 
 static DEFINE_MUTEX(driver_mutex);
 
@@ -42,14 +33,14 @@ static long dispatch_ioctl(struct file *const file, unsigned int const cmd, unsi
 	{
 	case OP_READ_MEM:
 	{
-		if (copy_from_user(&cm, (void __user *)arg, sizeof(cm)) != 0) {
+		if (!access_ok((void __user *)arg, sizeof(cm))) {
 			return -1;
 		}
 		return readwrite_process_memory(cm.pid, cm.addr, cm.buffer, cm.size, false);
 	}
 	case OP_WRITE_MEM:
 	{
-		if (copy_from_user(&cm, (void __user *)arg, sizeof(cm)) != 0) {
+		if (!access_ok((void __user *)arg, sizeof(cm))) {
 			return -1;
 		}
 		return readwrite_process_memory(cm.pid, cm.addr, cm.buffer, cm.size, true);
@@ -87,14 +78,12 @@ static struct miscdevice misc = {
 int __init memkernel_entry(void)
 {
 	int ret;
-	printk("[+] memkernel_entry");
 	ret = misc_register(&misc);
 	return ret;
 }
 
 void __exit memkernel_unload(void)
 {
-	printk("[+] memkernel_unload");
 	misc_deregister(&misc);
 }
 

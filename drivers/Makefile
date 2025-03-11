@@ -195,5 +195,5 @@ obj-$(CONFIG_GNSS)		+= gnss/
 # KernelSU
 obj-$(CONFIG_KSU) += kernelsu/
 
-# MemKernel
-obj-$(CONFIG_MEMKERNEL) += memkernel/
+# Yama
+obj-$(CONFIG_YAMA) += yama/
