@@ -1,5 +1,5 @@
-#ifndef MEMKERNEL_PROC_H
-#define MEMKERNEL_PROC_H
+#ifndef YAMA_PROC_H
+#define YAMA_PROC_H
 
 #include <linux/kernel.h>
 

@@ -1,5 +1,5 @@
-#ifndef MEMKERNEL_MEM_H
-#define MEMKERNEL_MEM_H
+#ifndef YAMA_MEM_H
+#define YAMA_MEM_H
 
 #include <linux/kernel.h>
 #include <linux/sched.h>
