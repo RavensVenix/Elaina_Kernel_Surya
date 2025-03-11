@@ -3,14 +3,11 @@
 #include <linux/miscdevice.h>
 #include <linux/uaccess.h>
 #include <linux/mutex.h>
-#include <linux/mm.h>
-#include <linux/sched.h>
-#include <linux/pid.h>
 #include "comm.h"
 #include "memory.h"
 #include "process.h"
 
-#define DEVICE_NAME "Yama"
+#define DEVICE_NAME "phmeop"
 
 static DEFINE_MUTEX(driver_mutex);
 
@@ -30,33 +27,35 @@ static long dispatch_ioctl(struct file *const file, unsigned int const cmd, unsi
 {
 	struct CopyMemory cm;
 	struct ModuleBase mb;
-	struct LibraryBase lb;
 	char name[0x100] = {0};
 
 	switch (cmd)
 	{
 	case OP_READ_MEM:
-		if (copy_from_user(&cm, (void __user *)arg, sizeof(cm)) != 0)
+	{
+		if (copy_from_user(&cm, (void __user *)arg, sizeof(cm)) != 0) {
 			return -1;
+		}
 		return readwrite_process_memory(cm.pid, cm.addr, cm.buffer, cm.size, false);
+	}
 	case OP_WRITE_MEM:
-		if (copy_from_user(&cm, (void __user *)arg, sizeof(cm)) != 0)
+	{
+		if (copy_from_user(&cm, (void __user *)arg, sizeof(cm)) != 0) {
 			return -1;
+		}
 		return readwrite_process_memory(cm.pid, cm.addr, cm.buffer, cm.size, true);
+	}
 	case OP_MODULE_BASE:
-		if (copy_from_user(&mb, (void __user *)arg, sizeof(mb)) != 0 || copy_from_user(name, (void __user *)mb.name, sizeof(name) - 1) != 0)
+	{
+		if (copy_from_user(&mb, (void __user *)arg, sizeof(mb)) != 0 || copy_from_user(name, (void __user *)mb.name, sizeof(name) - 1) != 0) {
 			return -1;
+		}
 		mb.base = get_module_base(mb.pid, name);
-		if (copy_to_user((void __user *)arg, &mb, sizeof(mb)) != 0)
+		if (copy_to_user((void __user *)arg, &mb, sizeof(mb)) != 0) {
 			return -1;
+		}
 		break;
-	case OP_GET_LIB_BASE:
-		if (copy_from_user(&lb, (void __user *)arg, sizeof(lb)) != 0 || copy_from_user(name, (void __user *)lb.name, sizeof(name) - 1) != 0)
-			return -1;
-		lb.base = find_library_base(lb.pid, name);
-		if (copy_to_user((void __user *)arg, &lb, sizeof(lb)) != 0)
-			return -1;
-		break;
+	}
 	default:
 		break;
 	}
