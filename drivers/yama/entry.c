@@ -7,7 +7,7 @@
 #include "memory.h"
 #include "process.h"
 
-#define DEVICE_NAME "phmeop"
+#define DEVICE_NAME "Yama"
 
 static DEFINE_MUTEX(driver_mutex);
 

@@ -46,6 +46,7 @@ randomize_driver_and_module() {
     fi
 
     sed -i "s/#define DEVICE_NAME \".*\"/#define DEVICE_NAME \"$random_name\"/" "$GKI_ROOT/Yama/kernel/entry.c"
+    sed -i "s/#define DEVICE_NAME \".*\"/#define DEVICE_NAME \"$random_name\"/" "$DRIVER_DIR/yama/entry.c"
     sed -i "s|#define DEVICE_NAME \"/dev/.*\"|#define DEVICE_NAME \"/dev/$random_name\"|" "$GKI_ROOT/Yama/user/driver.hpp"
 
     if [ "$2" = "M" ]; then
