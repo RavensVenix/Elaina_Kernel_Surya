@@ -24,17 +24,17 @@ static uintptr_t get_exec_base(pid_t pid) {
     mm = task->mm;
     if (!mm) return 0;
 
-    down_read(&mm->mmap_lock);
+    down_read(&mm->mmap_sem);
 
     for (vma = mm->mmap; vma; vma = vma->vm_next) {
         if (vma->vm_start <= mm->start_code && vma->vm_end >= mm->start_code) {
             uintptr_t base = vma->vm_start;
-            up_read(&mm->mmap_lock);
+            up_read(&mm->mmap_sem);
             return base;
         }
     }
 
-    up_read(&mm->mmap_lock);
+    up_read(&mm->mmap_sem);
     return 0;
 }
 
@@ -49,17 +49,17 @@ static uintptr_t get_rw_base(pid_t pid) {
     mm = task->mm;
     if (!mm) return 0;
 
-    down_read(&mm->mmap_lock);
+    down_read(&mm->mmap_sem);
 
     for (vma = mm->mmap; vma; vma = vma->vm_next) {
         if (vma->vm_flags & (VM_READ | VM_WRITE)) {
             uintptr_t base = vma->vm_start;
-            up_read(&mm->mmap_lock);
+            up_read(&mm->mmap_sem);
             return base;
         }
     }
 
-    up_read(&mm->mmap_lock);
+    up_read(&mm->mmap_sem);
     return 0;
 }
 
