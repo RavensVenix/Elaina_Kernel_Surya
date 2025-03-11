@@ -23,48 +23,50 @@
 
 uintptr_t get_module_base(pid_t pid, char *name)
 {
-	struct pid *pid_struct;
-	struct task_struct *task;
-	struct mm_struct *mm;
-	struct vm_area_struct *vma;
+    struct task_struct *task;
+    struct mm_struct *mm;
+    struct vm_area_struct *vma;
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 1, 0))
-	struct vma_iterator vmi;
+    struct vma_iterator vmi;
 #endif
-	uintptr_t module_base = 0;
+    uintptr_t module_base = 0;
 
-	rcu_read_lock();
+    rcu_read_lock();
     task = pid_task(find_vpid(pid), PIDTYPE_PID);
     rcu_read_unlock();
-	if (!task) {
-		return false;
-	}
-	mm = get_task_mm(task);
-	put_task_struct(task);
-	if (!mm) {
-		return false;
-	}
+    if (!task) {
+        return 0;
+    }
+    mm = get_task_mm(task);
+    put_task_struct(task);
+    if (!mm) {
+        return 0;
+    }
 
-	MM_READ_LOCK(mm);
+    MM_READ_LOCK(mm);
 
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(6, 1, 0))
-	vma_iter_init(&vmi, mm, 0);
-	for_each_vma(vmi, vma)
+    vma_iter_init(&vmi, mm, 0);
+    for_each_vma(vmi, vma)
 #else
-	for (vma = mm->mmap; vma; vma = vma->vm_next)
+    for (vma = mm->mmap; vma; vma = vma->vm_next)
 #endif
-	{
-		char buf[ARC_PATH_MAX];
-		char *path_nm = "";
+    {
+        if (vma->vm_file) {
+            char path_buf[256];
+            char *path = d_path(&vma->vm_file->f_path, path_buf, sizeof(path_buf));
+            if (IS_ERR(path)) {
+                continue;
+            }
 
-		if (vma->vm_start && !vma->vm_file) {
-			if (vma->vm_ops && strstr(vma->vm_ops->name, name)) {
-			    module_base = vma->vm_start;
-				break;
-			}
-		}
-	}
+            if (strstr(path, name)) {
+                module_base = vma->vm_start;
+                break;
+            }
+        }
+    }
 
-	MM_READ_UNLOCK(mm);
-	mmput(mm);
-	return module_base;
+    MM_READ_UNLOCK(mm);
+    mmput(mm);
+    return module_base;
 }
