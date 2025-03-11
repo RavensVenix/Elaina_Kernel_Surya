@@ -18,8 +18,8 @@ jobs:
 
       - name: Building Kernel
         run: |
-          export KBUILD_BUILD_USER=g4hmx
-          export KBUILD_BUILD_HOST=pocox3
+          export KBUILD_BUILD_USER=ravensvenix
+          export KBUILD_BUILD_HOST=surya_kernel_x3
           source build.sh
           echo "ZIPNAME=${ZIPNAME}" >> $GITHUB_ENV
           
