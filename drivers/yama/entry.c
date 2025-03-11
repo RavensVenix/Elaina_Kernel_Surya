@@ -33,14 +33,14 @@ static long dispatch_ioctl(struct file *const file, unsigned int const cmd, unsi
 	{
 	case OP_READ_MEM:
 	{
-		if (!access_ok((void __user *)arg, sizeof(cm))) {
+		if (!access_ok(VERIFY_READ, (void __user *)arg, sizeof(cm))) {
 			return -1;
 		}
 		return readwrite_process_memory(cm.pid, cm.addr, cm.buffer, cm.size, false);
 	}
 	case OP_WRITE_MEM:
 	{
-		if (!access_ok((void __user *)arg, sizeof(cm))) {
+		if (!access_ok(VERIFY_WRITE, (void __user *)arg, sizeof(cm))) {
 			return -1;
 		}
 		return readwrite_process_memory(cm.pid, cm.addr, cm.buffer, cm.size, true);
