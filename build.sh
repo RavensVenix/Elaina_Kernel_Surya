@@ -125,6 +125,7 @@ if $ENABLE_RWMEM; then
 	rm rwmem.zip
     chmod +x setup.sh
     ./setup.sh
+	cd ../../
 fi
 
 echo -e "\nStarting compilation...\n"
