@@ -23,17 +23,7 @@ jobs:
           source build.sh
           echo "ZIPNAME=${ZIPNAME}" >> $GITHUB_ENV
           
-      - name: Checking Source Dir
-        run: |
-          ls drivers/rwmem
-          
       - name: Upload Elaina-Kernel Artifact
-        uses: actions/upload-artifact@main
-        with:
-          name: rwMem_Module.zip
-          path: drivers/rwmem/rwmem.ko
-          
-      - name: Upload rwMem module
         uses: actions/upload-artifact@main
         with:
           name: Elaina-Kernel-Artifact
