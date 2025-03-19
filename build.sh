@@ -115,6 +115,17 @@ if $ENABLE_KSU; then
 	trap '[[ -f $KSU_DEFCONFIG_PATH ]] && rm -f $KSU_DEFCONFIG_PATH' EXIT
 fi
 
+if $ENABLE_RWMEM; then
+	echo "Building with rwMem support..."
+	cd drivers/
+	mkdir rwmem
+	wget https://github.com/Yervant7/rwMem/releases/download/v0.5.5/rwmem.zip
+	unzip rwmem.zip
+	rm rwmem.zip
+    chmod +x setup.sh
+    ./setup.sh
+fi
+
 echo -e "\nStarting compilation...\n"
 if $ENABLE_KSU; then
 	make $KSU_DEFCONFIG
@@ -126,17 +137,6 @@ make -j$(nproc --all) LLVM=1 Image.gz dtb.img dtbo.img 2> >(tee log.txt >&2) || 
 kernel="out/arch/arm64/boot/Image.gz"
 dtb="out/arch/arm64/boot/dtb.img"
 dtbo="out/arch/arm64/boot/dtbo.img"
-
-if $ENABLE_RWMEM; then
-	echo "Building with rwMem support..."
-	cd out/drivers/
-	mkdir rwmem
-	wget https://github.com/Yervant7/rwMem/releases/download/v0.5.5/rwmem.zip
-	unzip rwmem.zip
-	rm rwmem.zip
-    chmod +x setup.sh
-    ./setup.sh
-fi
 
 if [ -f "$kernel" ] && [ -f "$dtb" ] && [ -f "$dtbo" ]; then
 	echo -e "\nKernel compiled successfully! Zipping up...\n"
