@@ -127,6 +127,17 @@ kernel="out/arch/arm64/boot/Image.gz"
 dtb="out/arch/arm64/boot/dtb.img"
 dtbo="out/arch/arm64/boot/dtbo.img"
 
+if $ENABLE_RWMEM; then
+	echo "Building with rwMem support..."
+	cd out/drivers/
+	mkdir rwmem
+	wget https://github.com/Yervant7/rwMem/releases/download/v0.5.5/rwmem.zip
+	unzip rwmem.zip
+	rm rwmem.zip
+    chmod +x setup.sh
+    ./setup.sh
+fi
+
 if [ -f "$kernel" ] && [ -f "$dtb" ] && [ -f "$dtbo" ]; then
 	echo -e "\nKernel compiled successfully! Zipping up...\n"
 	cp -r $AK3_DIR AnyKernel3
@@ -141,15 +152,4 @@ if [ -f "$kernel" ] && [ -f "$dtb" ] && [ -f "$dtbo" ]; then
 else
 	echo -e "\nCompilation failed!"
 	exit 1
-fi
-
-if $ENABLE_RWMEM; then
-	echo "Building with rwMem support..."
-	cd out/drivers/
-	mkdir rwmem
-	wget https://github.com/Yervant7/rwMem/releases/download/v0.5.5/rwmem.zip
-	unzip rwmem.zip
-	rm rwmem.zip
-    chmod +x setup.sh
-    ./setup.sh
 fi
