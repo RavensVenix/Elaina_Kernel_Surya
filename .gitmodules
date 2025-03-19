@@ -8,6 +8,3 @@
 [submodule "Yama"]
 	path = Yama
 	url = https://github.com/RavensVenix/Yama.git
-[submodule "Vanitas"]
-	path = Vanitas
-	url = https://github.com/RavensVenix/Vanitas
