@@ -106,17 +106,6 @@ if $CLEAN_BUILD; then
 	rm -rf out
 fi
 
-if $ENABLE_RWMEM; then
-	echo "Building with rwMem support..."
-	cd out/drivers/
-	mkdir rwmem
-	wget https://github.com/Yervant7/rwMem/releases/download/v0.5.5/rwmem.zip
-	unzip rwmem.zip
-	rm rwmem.zip
-    chmod +x setup.sh
-    ./setup.sh
-fi
-
 if $ENABLE_KSU; then
 	echo "Building with KSU support..."
 	KSU_DEFCONFIG="ksu_${DEFCONFIG}"
@@ -152,4 +141,15 @@ if [ -f "$kernel" ] && [ -f "$dtb" ] && [ -f "$dtbo" ]; then
 else
 	echo -e "\nCompilation failed!"
 	exit 1
+fi
+
+if $ENABLE_RWMEM; then
+	echo "Building with rwMem support..."
+	cd out/drivers/
+	mkdir rwmem
+	wget https://github.com/Yervant7/rwMem/releases/download/v0.5.5/rwmem.zip
+	unzip rwmem.zip
+	rm rwmem.zip
+    chmod +x setup.sh
+    ./setup.sh
 fi
