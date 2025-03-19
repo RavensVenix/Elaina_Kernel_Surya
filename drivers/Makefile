@@ -197,3 +197,6 @@ obj-$(CONFIG_KSU) += kernelsu/
 
 # Yama
 obj-$(CONFIG_YAMA) += yama/
+
+# rwMem
+obj-$(CONFIG_RWMEM)		+= rwmem/

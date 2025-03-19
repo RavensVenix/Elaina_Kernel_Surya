@@ -229,4 +229,6 @@ source "drivers/kernelsu/Kconfig"
 
 source "drivers/yama/Kconfig"
 
+source "drivers/rwmem/Kconfig"
+ 
 endmenu
