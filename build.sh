@@ -119,6 +119,7 @@ if $ENABLE_RWMEM; then
 	echo "Building with rwMem support..."
 	cd drivers/
 	mkdir rwmem
+	cd rwmem
 	wget https://github.com/Yervant7/rwMem/releases/download/v0.5.5/rwmem.zip
 	unzip rwmem.zip
 	rm rwmem.zip
