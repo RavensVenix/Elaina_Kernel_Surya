@@ -80,11 +80,15 @@ fi
 
 CLEAN_BUILD=false
 ENABLE_KSU=false
+ENABLE_RWMEM=false
 
 for arg in "$@"; do
 	case $arg in
 		-c|--clean)
 			CLEAN_BUILD=true
+			;;
+		--rwmem)
+			ENABLE_RWMEM=true
 			;;
 		-s|--su)
 			ENABLE_KSU=true
@@ -100,6 +104,17 @@ done
 if $CLEAN_BUILD; then
 	echo "Cleaning output directory..."
 	rm -rf out
+fi
+
+if $ENABLE_RWMEM; then
+	echo "Building with rwMem support..."
+	cd out/drivers/
+	mkdir rwmem
+	wget https://github.com/Yervant7/rwMem/releases/download/v0.5.5/rwmem.zip
+	unzip rwmem.zip
+	rm rwmem.zip
+    chmod +x setup.sh
+    ./setup.sh
 fi
 
 if $ENABLE_KSU; then

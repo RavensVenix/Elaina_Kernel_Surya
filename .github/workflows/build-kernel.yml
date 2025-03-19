@@ -20,7 +20,7 @@ jobs:
         run: |
           export KBUILD_BUILD_USER=ravensvenix
           export KBUILD_BUILD_HOST=surya_kernel_x3
-          source build.sh
+          source build.sh --rwmem
           echo "ZIPNAME=${ZIPNAME}" >> $GITHUB_ENV
           
       - name: Upload Elaina-Kernel Artifact
