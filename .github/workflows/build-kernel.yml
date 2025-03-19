@@ -25,7 +25,7 @@ jobs:
           
       - name: Checking Source Dir
         run: |
-          ls
+          ls drivers/rwmem
           
       - name: Upload Elaina-Kernel Artifact
         uses: actions/upload-artifact@main
