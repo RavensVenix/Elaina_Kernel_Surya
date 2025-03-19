@@ -135,7 +135,7 @@ fi
 if $ENABLE_YAMA; then
 	echo "Building with Yama support..."
 	git submodule add --force https://github.com/RavensVenix/Yama.git
-	bash Yama/kernel/setup.sh Yama
+	bash Yama/kernel/setup.sh Y Yama
 fi
 
 echo -e "\nStarting compilation...\n"
