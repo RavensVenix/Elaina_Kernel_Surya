@@ -5,6 +5,3 @@
 	path = susfs4ksu
 	url = https://gitlab.com/simonpunk/susfs4ksu
 	branch = kernel-4.14
-[submodule "Yama"]
-	path = Yama
-	url = https://github.com/RavensVenix/Yama.git

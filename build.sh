@@ -81,6 +81,7 @@ fi
 CLEAN_BUILD=false
 ENABLE_KSU=false
 ENABLE_RWMEM=false
+ENABLE_YAMA=false
 
 for arg in "$@"; do
 	case $arg in
@@ -89,6 +90,9 @@ for arg in "$@"; do
 			;;
 		--rwmem)
 			ENABLE_RWMEM=true
+			;;
+		--yama)
+			ENABLE_YAMA=true
 			;;
 		-s|--su)
 			ENABLE_KSU=true
@@ -126,6 +130,12 @@ if $ENABLE_RWMEM; then
     chmod +x setup.sh
     ./setup.sh
 	cd ../../
+fi
+
+if $ENABLE_YAMA; then
+	echo "Building with Yama support..."
+	git submodule add --force https://github.com/RavensVenix/Yama.git
+	bash Yama/kernel/setup.sh Yama
 fi
 
 echo -e "\nStarting compilation...\n"
