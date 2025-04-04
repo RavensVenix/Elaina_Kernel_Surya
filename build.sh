@@ -82,6 +82,7 @@ CLEAN_BUILD=false
 ENABLE_KSU=false
 ENABLE_RWMEM=false
 ENABLE_YAMA=false
+ENABLE_SUSFS=false
 
 for arg in "$@"; do
 	case $arg in
@@ -94,9 +95,11 @@ for arg in "$@"; do
 		--yama)
 			ENABLE_YAMA=true
 			;;
-		-s|--su)
+		--susfs)
+			ENABLE_SUSFS=true
+			;;
+		--ksu-next)
 			ENABLE_KSU=true
-			ZIPNAME="${ZIPNAME/Elaina-surya/Elaina-KSU}"
 			;;
 		*)
 			echo "Unknown argument: $arg"
@@ -110,13 +113,15 @@ if $CLEAN_BUILD; then
 	rm -rf out
 fi
 
-if $ENABLE_KSU; then
-	echo "Building with KSU support..."
-	KSU_DEFCONFIG="ksu_${DEFCONFIG}"
-	KSU_DEFCONFIG_PATH="arch/arm64/configs/${KSU_DEFCONFIG}"
-	cp arch/arm64/configs/$DEFCONFIG $KSU_DEFCONFIG_PATH
-	sed -i 's/# CONFIG_KSU is not set/CONFIG_KSU=y/g' $KSU_DEFCONFIG_PATH
-	trap '[[ -f $KSU_DEFCONFIG_PATH ]] && rm -f $KSU_DEFCONFIG_PATH' EXIT
+if $ENABLE_KSU && $ENABLE_SUSFS; then
+    echo "Building with KSU-Next and SUSFS support..."
+	git clone https://github.com/KernelSU-Next/KernelSU-Next.git
+	git clone https://gitlab.com/simonpunk/susfs4ksu/-/tree/kernel-4.14?ref_type=heads.git
+	cp ./susfs4ksu/kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch ./KernelSU-Next
+	cd ./KernelSU-Next
+	patch -p1 < 10_enable_susfs_for_ksu.patch
+	cd kernel
+	bash setup.sh
 fi
 
 if $ENABLE_RWMEM; then
@@ -139,11 +144,7 @@ if $ENABLE_YAMA; then
 fi
 
 echo -e "\nStarting compilation...\n"
-if $ENABLE_KSU; then
-	make $KSU_DEFCONFIG
-else
-	make $DEFCONFIG
-fi
+make $DEFCONFIG
 make -j$(nproc --all) LLVM=1 Image.gz dtb.img dtbo.img 2> >(tee log.txt >&2) || exit $?
 
 kernel="out/arch/arm64/boot/Image.gz"
