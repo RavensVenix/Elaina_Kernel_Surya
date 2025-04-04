@@ -121,7 +121,8 @@ if $ENABLE_KSU && $ENABLE_SUSFS; then
     cp ./susfs4ksu/kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch ./KernelSU-Next
     cd ./KernelSU-Next
     patch -p1 < 10_enable_susfs_for_ksu.patch
-	cp -rfu kernel/* ../drivers/kernelsu/
+	cd ../drivers/kernelsu/
+	cp -rf ../../KernelSU-Next/kernel/* .
 
 elif $ENABLE_KSU; then
     echo "Building with KSU-Next support..."
