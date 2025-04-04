@@ -122,6 +122,7 @@ if $ENABLE_KSU && $ENABLE_SUSFS; then
     cd ./KernelSU-Next
     patch -p1 < 10_enable_susfs_for_ksu.patch
 	cd ../drivers/kernelsu/
+	rm -rf *
 	cp -rf ../../KernelSU-Next/kernel/* .
 
 elif $ENABLE_KSU; then
