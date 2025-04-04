@@ -116,7 +116,7 @@ fi
 if $ENABLE_KSU && $ENABLE_SUSFS; then
     echo "Building with KSU-Next and SUSFS support..."
 	git clone https://github.com/KernelSU-Next/KernelSU-Next.git
-	git clone https://gitlab.com/simonpunk/susfs4ksu/-/tree/kernel-4.14?ref_type=heads.git
+	git clone https://gitlab.com/simonpunk/susfs4ksu/-/tree/kernel-4.14.git
 	cp ./susfs4ksu/kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch ./KernelSU-Next
 	cd ./KernelSU-Next
 	patch -p1 < 10_enable_susfs_for_ksu.patch
