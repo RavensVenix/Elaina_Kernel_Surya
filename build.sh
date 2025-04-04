@@ -113,6 +113,13 @@ if $CLEAN_BUILD; then
 	rm -rf out
 fi
 
+if $ENABLE_KSU; then
+    echo "Building with KSU-Next support..."
+	git clone https://github.com/KernelSU-Next/KernelSU-Next.git
+	cd ./KernelSU-Next/kernel
+	bash setup.sh
+fi
+
 if $ENABLE_KSU && $ENABLE_SUSFS; then
     echo "Building with KSU-Next and SUSFS support..."
 	git clone https://github.com/KernelSU-Next/KernelSU-Next.git
