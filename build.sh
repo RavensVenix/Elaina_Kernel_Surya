@@ -115,18 +115,11 @@ fi
 
 if $ENABLE_KSU && $ENABLE_SUSFS; then
     echo "Building with KSU-Next and SUSFS support..."
-    git clone https://github.com/KernelSU-Next/KernelSU-Next.git
-    git clone https://gitlab.com/simonpunk/susfs4ksu.git
-	bash KernelSU-Next/kernel/setup.sh
-    cp ./susfs4ksu/kernel_patches/KernelSU/10_enable_susfs_for_ksu.patch ./KernelSU-Next
-    cd ./KernelSU-Next
-    patch -p1 < 10_enable_susfs_for_ksu.patch
-	cd ../
+	curl -LSs "https://raw.githubusercontent.com/rifsxd/KernelSU-Next/next-susfs/kernel/setup.sh" | bash -s next-susfs
 
 elif $ENABLE_KSU; then
     echo "Building with KSU-Next support..."
-    git clone https://github.com/KernelSU-Next/KernelSU-Next.git
-    bash KernelSU-Next/kernel/setup.sh
+    curl -LSs "https://raw.githubusercontent.com/rifsxd/KernelSU-Next/next/kernel/setup.sh" | bash -
 fi
 
 if $ENABLE_RWMEM; then
