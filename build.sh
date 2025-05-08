@@ -1,10 +1,10 @@
 #!/bin/bash
 #
-# Compile script for FSociety kernel
+# Compile script for Elaina Kernel
 # Copyright (C) 2020-2021 Adithya R.
 
 SECONDS=0 # builtin bash timer
-ZIPNAME="FSociety-surya-$(date '+%Y%m%d-%H%M').zip"
+ZIPNAME="Elaina_Celesteria-KSUNext-Surya-$(date '+%Y%m%d-%H%M').zip"
 TC_DIR="$(pwd)/tc/clang-20"
 AK3_DIR="$(pwd)/android/AnyKernel3"
 DEFCONFIG="surya_defconfig"
@@ -51,11 +51,11 @@ sync_repo() {
 }
 
 if [[ $1 = "-u" || $1 = "--update" ]]; then
-    sync_repo $AK3_DIR "https://github.com/rd-stuffs/AnyKernel3.git" "FSociety" true
+    sync_repo $AK3_DIR "https://github.com/RavensVenix/AnyKernel3.git" "ElainaCelestia" true
     sync_repo $TC_DIR "https://bitbucket.org/rdxzv/clang-standalone.git" "20" true
 	exit
 else
-    sync_repo $AK3_DIR "https://github.com/rd-stuffs/AnyKernel3.git" "FSociety" false
+    sync_repo $AK3_DIR "https://github.com/RavensVenix/AnyKernel3.git" "ElainaCelestia" false
     sync_repo $TC_DIR "https://bitbucket.org/rdxzv/clang-standalone.git" "20" false
 fi
 
@@ -88,7 +88,6 @@ for arg in "$@"; do
 			;;
 		-s|--su)
 			ENABLE_KSU=true
-			ZIPNAME="${ZIPNAME/FSociety-surya/FSociety-KSU}"
 			;;
 		*)
 			echo "Unknown argument: $arg"
@@ -108,6 +107,7 @@ if $ENABLE_KSU; then
 	KSU_DEFCONFIG_PATH="arch/arm64/configs/${KSU_DEFCONFIG}"
 	cp arch/arm64/configs/$DEFCONFIG $KSU_DEFCONFIG_PATH
 	sed -i 's/# CONFIG_KSU is not set/CONFIG_KSU=y/g' $KSU_DEFCONFIG_PATH
+	curl -LSs "https://raw.githubusercontent.com/rifsxd/KernelSU-Next/next-susfs/kernel/setup.sh" | bash -s next-susfs
 	trap '[[ -f $KSU_DEFCONFIG_PATH ]] && rm -f $KSU_DEFCONFIG_PATH' EXIT
 fi
 
@@ -128,7 +128,7 @@ if [ -f "$kernel" ] && [ -f "$dtb" ] && [ -f "$dtbo" ]; then
 	cp -r $AK3_DIR AnyKernel3
 	cp $kernel $dtb $dtbo AnyKernel3
 	cd AnyKernel3
-	git checkout FSociety &> /dev/null
+	git checkout ElainaCelesteria &> /dev/null
 	zip -r9 "../$ZIPNAME" * -x .git modules\* patch\* ramdisk\* README.md *placeholder
 	cd ..
 	rm -rf AnyKernel3
