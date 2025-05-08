@@ -102,7 +102,7 @@ if $CLEAN_BUILD; then
 fi
 
 if $ENABLE_KSU; then
-	echo "Building with KSU support..."
+	echo "Building with KSUNext && SuSFS support..."
 	KSU_DEFCONFIG="ksu_${DEFCONFIG}"
 	KSU_DEFCONFIG_PATH="arch/arm64/configs/${KSU_DEFCONFIG}"
 	cp arch/arm64/configs/$DEFCONFIG $KSU_DEFCONFIG_PATH
