@@ -79,15 +79,11 @@ if [[ $1 = "-rf" || $1 = "--regen-full" ]]; then
 fi
 
 CLEAN_BUILD=false
-ENABLE_KSU=false
 
 for arg in "$@"; do
 	case $arg in
 		-c|--clean)
 			CLEAN_BUILD=true
-			;;
-		-s|--su)
-			ENABLE_KSU=true
 			;;
 		*)
 			echo "Unknown argument: $arg"
@@ -101,22 +97,8 @@ if $CLEAN_BUILD; then
 	rm -rf out
 fi
 
-if $ENABLE_KSU; then
-	echo "Building with KSUNext && SuSFS support..."
-	KSU_DEFCONFIG="ksu_${DEFCONFIG}"
-	KSU_DEFCONFIG_PATH="arch/arm64/configs/${KSU_DEFCONFIG}"
-	cp arch/arm64/configs/$DEFCONFIG $KSU_DEFCONFIG_PATH
-	sed -i 's/# CONFIG_KSU is not set/CONFIG_KSU=y/g' $KSU_DEFCONFIG_PATH
-	curl -LSs "https://raw.githubusercontent.com/rifsxd/KernelSU-Next/next-susfs/kernel/setup.sh" | bash -s next-susfs
-	trap '[[ -f $KSU_DEFCONFIG_PATH ]] && rm -f $KSU_DEFCONFIG_PATH' EXIT
-fi
-
 echo -e "\nStarting compilation...\n"
-if $ENABLE_KSU; then
-	make $KSU_DEFCONFIG
-else
-	make $DEFCONFIG
-fi
+make $DEFCONFIG
 make -j$(nproc --all) LLVM=1 Image.gz dtb.img dtbo.img 2> >(tee log.txt >&2) || exit $?
 
 kernel="out/arch/arm64/boot/Image.gz"
