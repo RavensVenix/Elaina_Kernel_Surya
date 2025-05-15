@@ -51,11 +51,11 @@ sync_repo() {
 }
 
 if [[ $1 = "-u" || $1 = "--update" ]]; then
-    sync_repo $AK3_DIR "https://github.com/RavensVenix/AnyKernel3.git" "ElainaCelesteria" true
+    sync_repo $AK3_DIR "https://github.com/RavensVenix/AnyKernel3.git" "Celestria" true
     sync_repo $TC_DIR "https://bitbucket.org/rdxzv/clang-standalone.git" "20" true
 	exit
 else
-    sync_repo $AK3_DIR "https://github.com/RavensVenix/AnyKernel3.git" "ElainaCelesteria" false
+    sync_repo $AK3_DIR "https://github.com/RavensVenix/AnyKernel3.git" "Celestria" false
     sync_repo $TC_DIR "https://bitbucket.org/rdxzv/clang-standalone.git" "20" false
 fi
 
