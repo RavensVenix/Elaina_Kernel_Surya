@@ -79,11 +79,19 @@ if [[ $1 = "-rf" || $1 = "--regen-full" ]]; then
 fi
 
 CLEAN_BUILD=false
+KSU_NEXT=false
+SUKI_SU=false
 
 for arg in "$@"; do
 	case $arg in
 		-c|--clean)
 			CLEAN_BUILD=true
+			;;
+		--sukisu)
+			SUKI_SU=true
+			;;
+		--ksun)
+			KSU_NEXT=true
 			;;
 		*)
 			echo "Unknown argument: $arg"
@@ -91,6 +99,16 @@ for arg in "$@"; do
 			;;
 	esac
 done
+
+if $SUKI_SU; then
+    echo "Building With SukiSU-Ultra Support."
+	curl -LSs "https://raw.githubusercontent.com/ShirkNeko/SukiSU-Ultra/main/kernel/setup.sh" | bash -s susfs-dev
+fi
+
+if $KSU_NEXT; then
+    echo "Building With KernelSU-Next Support."
+	curl -LSs "https://raw.githubusercontent.com/rifsxd/KernelSU-Next/next-susfs/kernel/setup.sh" | bash -s next-susfs
+fi
 
 if $CLEAN_BUILD; then
 	echo "Cleaning output directory..."
