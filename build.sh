@@ -80,15 +80,19 @@ fi
 
 CLEAN_BUILD=false
 KSU_NEXT=false
-SUKI_SU=false
+SUKI_SU_NON_GKI=false
+SUKI_SU_SUSFS=false
 
 for arg in "$@"; do
 	case $arg in
 		-c|--clean)
 			CLEAN_BUILD=true
 			;;
+		--sukisu-susfs)
+			SUKI_SU_SUSFS=true
+			;;
 		--sukisu)
-			SUKI_SU=true
+			SUKI_SU_NON_GKI=true
 			;;
 		--ksun)
 			KSU_NEXT=true
@@ -100,8 +104,13 @@ for arg in "$@"; do
 	esac
 done
 
-if $SUKI_SU; then
+if $SUKI_SU_NON_GKI; then
     echo "Building With SukiSU-Ultra Support."
+	curl -LSs "https://raw.githubusercontent.com/ShirkNeko/SukiSU-Ultra/main/kernel/setup.sh" | bash -s nongki
+fi
+
+if $SUKI_SU_SUSFS; then
+    echo "Building With SukiSU-Ultra + SuSFS Support."
 	curl -LSs "https://raw.githubusercontent.com/ShirkNeko/SukiSU-Ultra/main/kernel/setup.sh" | bash -s susfs-dev
 fi
 
