@@ -103,11 +103,7 @@ done
 
 if $SUKI_SU_NON_GKI; then
     echo "Building With SukiSU-Ultra Support."
-	git submodule add -b nongki https://github.com/ShirkNeko/SukiSU-Ultra.git
-	mv 0001-sukisu-susfs-v1.5.7.patch SukiSU-Ultra/
-	cd SukiSU-Ultra
-	patch -p1 < 0001-sukisu-susfs-v1.5.7.patch
-	cd ..
+	curl -LSs "https://raw.githubusercontent.com/ShirkNeko/SukiSU-Ultra/main/kernel/setup.sh" | bash -s nongki
 fi
 
 if $SUKI_SU_SUSFS; then
