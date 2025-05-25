@@ -28,3 +28,19 @@ jobs:
         with:
           name: Kernel-Artifact
           path: ${{ env.ZIPNAME }}
+
+      - name: Create Telegram Caption
+        run: |
+          BUILD_DATE="$(date '+%H:%M %d/%m/%Y')"
+          HEAD="$(git rev-parse HEAD)"
+          HEAD_COMMIT="https://github.com/RavensVenix/surya_kernel_x3/commit/$HEAD"
+          echo -e "${BUILD_DATE}\n\n${HEAD_COMMIT}" > caption.txt
+
+      - name: Upload Build To Telegram
+        run: |
+          caption=$(<caption.txt)
+          curl -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendDocument" \
+          -F chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
+          -F message_thread_id=${{ secrets.TELEGRAM_TOPIC_ID }} \
+          -F document=@"${{ env.ZIPNAME }}" \
+          -F caption="${caption}"
