@@ -683,19 +683,6 @@ static void jump_label_del_module(struct module *mod)
 	}
 }
 
-/* Disable any jump label entries in module init code */
-static void jump_label_invalidate_module_init(struct module *mod)
-{
-	struct jump_entry *iter_start = mod->jump_entries;
-	struct jump_entry *iter_stop = iter_start + mod->num_jump_entries;
-	struct jump_entry *iter;
-
-	for (iter = iter_start; iter < iter_stop; iter++) {
-		if (within_module_init(iter->code, mod))
-			iter->code = 0;
-	}
-}
-
 static int
 jump_label_module_notify(struct notifier_block *self, unsigned long val,
 			 void *data)
