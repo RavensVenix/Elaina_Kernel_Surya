@@ -108,7 +108,7 @@ fi
 
 if $SUKI_SU_SUSFS; then
     echo "Building With SukiSU-Ultra + SuSFS Support."
-	curl -LSs "https://raw.githubusercontent.com/ShirkNeko/SukiSU-Ultra/main/kernel/setup.sh" | bash -s susfs-1.5.8
+	curl -LSs "https://raw.githubusercontent.com/ShirkNeko/SukiSU-Ultra/main/kernel/setup.sh" | bash -s susfs-main
 fi
 
 if $KSU_NEXT; then
